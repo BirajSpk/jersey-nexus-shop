@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Heart, ShoppingCart, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useCart } from '@/context/CartContext';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProductCardProps {
   id: string;
@@ -29,6 +31,45 @@ const ProductCard = ({
 }: ProductCardProps) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
+  const handleQuickAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Add with default size M
+    addItem({
+      id,
+      name,
+      price,
+      size: 'M',
+      quantity: 1,
+      image: image || ''
+    });
+
+    toast({
+      title: "Added to Cart",
+      description: `${name} (Size M) has been added to your cart.`,
+    });
+  };
+
+  const handleAddToCart = () => {
+    // Add with default size M
+    addItem({
+      id,
+      name,
+      price,
+      size: 'M',
+      quantity: 1,
+      image: image || ''
+    });
+
+    toast({
+      title: "Added to Cart",
+      description: `${name} (Size M) has been added to your cart.`,
+    });
+  };
 
   return (
     <div 
@@ -67,10 +108,7 @@ const ProductCard = ({
           <div className="absolute bottom-4 left-4 right-4">
             <Button 
               className="w-full bg-white text-gray-900 hover:bg-white/90 shadow-lg transform transition-transform duration-300"
-              onClick={(e) => {
-                e.preventDefault();
-                // Add to cart logic
-              }}
+              onClick={handleQuickAdd}
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
               Quick Add
@@ -129,9 +167,7 @@ const ProductCard = ({
           </Link>
           <Button 
             className="flex-1 bg-gradient-primary text-white shadow-primary"
-            onClick={() => {
-              // Add to cart logic
-            }}
+            onClick={handleAddToCart}
           >
             Add to Cart
           </Button>

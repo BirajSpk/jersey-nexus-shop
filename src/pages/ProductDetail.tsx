@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
@@ -8,43 +8,141 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Heart, ShoppingCart, Star, Truck, Shield, RotateCcw, Share2, Minus, Plus } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
+import { useToast } from '@/hooks/use-toast';
 
 const ProductDetail = () => {
   const { productId } = useParams();
+  const navigate = useNavigate();
+  const { addItem } = useCart();
+  const { toast } = useToast();
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
 
-  // Mock data - replace with real data from API
-  const product = {
-    id: productId,
-    name: 'Manchester United Home Jersey 2024',
-    price: 8500,
-    originalPrice: 10000,
-    category: 'Football',
-    brand: 'Adidas',
-    rating: 4.8,
-    reviews: 124,
-    availability: 'In Stock',
-    sku: 'MU-HOME-2024',
-    description: 'The official Manchester United home jersey for the 2024 season. Features advanced moisture-wicking technology and the iconic red design that represents the Theatre of Dreams.',
-    features: [
-      'Official licensed product',
-      'Advanced moisture-wicking fabric',
-      'Comfortable regular fit',
-      'Machine washable',
-      'Embroidered club badge'
-    ],
-    sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-    images: ['', '', '', ''], // Mock image URLs
-    specifications: {
-      'Material': '100% Polyester',
-      'Fit': 'Regular',
-      'Care': 'Machine wash cold',
-      'Origin': 'Made in Thailand',
-      'Season': '2024/25'
-    }
+  // Mock product data with different products based on ID
+  const getProductData = (id: string) => {
+    const products: Record<string, any> = {
+      '1': {
+        id: '1',
+        name: 'Manchester United Home Jersey 2024',
+        price: 8500,
+        originalPrice: 10000,
+        category: 'Football',
+        brand: 'Adidas',
+        rating: 4.8,
+        reviews: 124,
+        availability: 'In Stock',
+        sku: 'MU-HOME-2024',
+        description: 'The official Manchester United home jersey for the 2024 season. Features advanced moisture-wicking technology and the iconic red design that represents the Theatre of Dreams.',
+        features: [
+          'Official licensed product',
+          'Advanced moisture-wicking fabric',
+          'Comfortable regular fit',
+          'Machine washable',
+          'Embroidered club badge'
+        ],
+        sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+        images: ['', '', '', ''],
+        specifications: {
+          'Material': '100% Polyester',
+          'Fit': 'Regular',
+          'Care': 'Machine wash cold',
+          'Origin': 'Made in Thailand',
+          'Season': '2024/25'
+        }
+      },
+      '2': {
+        id: '2',
+        name: 'Manchester United Away Jersey 2024',
+        price: 8500,
+        category: 'Football',
+        brand: 'Adidas',
+        rating: 4.7,
+        reviews: 98,
+        availability: 'In Stock',
+        sku: 'MU-AWAY-2024',
+        description: 'The official Manchester United away jersey for the 2024 season. Featuring a sleek black design with subtle red accents.',
+        features: [
+          'Official licensed product',
+          'Advanced moisture-wicking fabric',
+          'Athletic fit',
+          'Machine washable',
+          'Heat-pressed club badge'
+        ],
+        sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+        images: ['', '', '', ''],
+        specifications: {
+          'Material': '100% Polyester',
+          'Fit': 'Athletic',
+          'Care': 'Machine wash cold',
+          'Origin': 'Made in Thailand',
+          'Season': '2024/25'
+        }
+      },
+      '3': {
+        id: '3',
+        name: 'Manchester City Home Jersey 2024',
+        price: 9000,
+        category: 'Football',
+        brand: 'Puma',
+        rating: 4.8,
+        reviews: 156,
+        availability: 'In Stock',
+        sku: 'MC-HOME-2024',
+        description: 'The official Manchester City home jersey featuring the classic sky blue color and modern design elements.',
+        features: [
+          'Official licensed product',
+          'PUMA dryCELL technology',
+          'Slim fit design',
+          'Machine washable',
+          'Woven club crest'
+        ],
+        sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+        images: ['', '', '', ''],
+        specifications: {
+          'Material': '100% Recycled Polyester',
+          'Fit': 'Slim',
+          'Care': 'Machine wash cold',
+          'Origin': 'Made in Vietnam',
+          'Season': '2024/25'
+        }
+      },
+      '4': {
+        id: '4',
+        name: 'Liverpool Home Jersey 2024',
+        price: 8000,
+        originalPrice: 9500,
+        category: 'Football',
+        brand: 'Nike',
+        rating: 4.9,
+        reviews: 203,
+        availability: 'In Stock',
+        sku: 'LIV-HOME-2024',
+        description: 'The iconic Liverpool home jersey in classic red. Features Nike Dri-FIT technology for optimal performance.',
+        features: [
+          'Official licensed product',
+          'Nike Dri-FIT technology',
+          'Stadium fit',
+          'Machine washable',
+          'Embroidered club crest'
+        ],
+        sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+        images: ['', '', '', ''],
+        specifications: {
+          'Material': '100% Polyester',
+          'Fit': 'Stadium',
+          'Care': 'Machine wash cold',
+          'Origin': 'Made in Thailand',
+          'Season': '2024/25'
+        }
+      }
+    };
+    
+    return products[id] || products['1']; // Default to product 1 if ID not found
   };
+
+  const product = getProductData(productId || '1');
 
   const relatedProducts = [
     {
@@ -82,11 +180,43 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (!selectedSize) {
-      alert('Please select a size');
+      toast({
+        title: "Size Required",
+        description: "Please select a size before adding to cart.",
+        variant: "destructive",
+      });
       return;
     }
-    // Add to cart logic
-    console.log('Added to cart:', { productId, size: selectedSize, quantity });
+    
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      size: selectedSize,
+      quantity: quantity,
+      image: '' // Add image URL when available
+    });
+
+    toast({
+      title: "Added to Cart",
+      description: `${product.name} (${selectedSize}) has been added to your cart.`,
+    });
+  };
+
+  const handleBuyNow = () => {
+    if (!selectedSize) {
+      toast({
+        title: "Size Required",
+        description: "Please select a size before proceeding to checkout.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Add to cart first
+    handleAddToCart();
+    // Then navigate to checkout
+    navigate('/checkout');
   };
 
   return (
@@ -237,7 +367,11 @@ const ProductDetail = () => {
                 </Button>
               </div>
               
-              <Button variant="outline" className="w-full h-12 border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+              <Button 
+                variant="outline" 
+                className="w-full h-12 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                onClick={handleBuyNow}
+              >
                 Buy Now
               </Button>
             </div>
@@ -289,7 +423,7 @@ const ProductDetail = () => {
                 {Object.entries(product.specifications).map(([key, value]) => (
                   <div key={key} className="flex justify-between py-2 border-b border-border last:border-b-0">
                     <span className="font-medium">{key}</span>
-                    <span className="text-muted-foreground">{value}</span>
+                    <span className="text-muted-foreground">{String(value)}</span>
                   </div>
                 ))}
               </div>

@@ -23,6 +23,58 @@ const Home = () => {
     },
     {
       id: '2',
+      name: 'Manchester United Away Jersey 2024',
+      price: 8500,
+      image: '',
+      category: 'Football',
+      rating: 4.7,
+      isNew: false,
+      isSale: false
+    },
+    {
+      id: '3',
+      name: 'Manchester City Home Jersey 2024',
+      price: 9000,
+      image: '',
+      category: 'Football',
+      rating: 4.8,
+      isNew: true,
+      isSale: false
+    },
+    {
+      id: '4',
+      name: 'Liverpool Home Jersey 2024',
+      price: 8000,
+      originalPrice: 9500,
+      image: '',
+      category: 'Football',
+      rating: 4.9,
+      isNew: false,
+      isSale: true
+    },
+    {
+      id: '5',
+      name: 'Arsenal Home Jersey 2024',
+      price: 8200,
+      image: '',
+      category: 'Football',
+      rating: 4.6,
+      isNew: true,
+      isSale: false
+    },
+    {
+      id: '6',
+      name: 'Chelsea Away Jersey 2024',
+      price: 7800,
+      originalPrice: 9000,
+      image: '',
+      category: 'Football',
+      rating: 4.5,
+      isNew: false,
+      isSale: true
+    },
+    {
+      id: '7',
       name: 'Lakers Championship Jersey',
       price: 7500,
       image: '',
@@ -32,7 +84,7 @@ const Home = () => {
       isSale: false
     },
     {
-      id: '3',
+      id: '8',
       name: 'Team India Cricket Jersey',
       price: 6500,
       originalPrice: 8000,
@@ -41,16 +93,6 @@ const Home = () => {
       rating: 4.7,
       isNew: false,
       isSale: true
-    },
-    {
-      id: '4',
-      name: 'Barcelona Away Jersey',
-      price: 9000,
-      image: '',
-      category: 'Football',
-      rating: 4.8,
-      isNew: true,
-      isSale: false
     }
   ];
 
