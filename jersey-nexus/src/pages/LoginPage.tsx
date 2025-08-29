@@ -1,0 +1,46 @@
+import React, { useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+
+export const LoginPage: React.FC = () => {
+  const { signIn, isAdmin } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation() as any
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    const res = await signIn(email, password)
+    setLoading(false)
+    if (res.error) return setError(res.error)
+    const redirectTo = location.state?.from ?? '/'
+    const shouldCheckout = location.state?.checkout === true
+    if (isAdmin) navigate('/admin')
+    else if (shouldCheckout) navigate('/checkout')
+    else navigate(redirectTo)
+  }
+
+  return (
+    <div className="mx-auto max-w-md px-4 sm:px-6 lg:px-8 py-10">
+      <h2 className="text-2xl font-bold mb-6">Login</h2>
+      <form onSubmit={onSubmit} className="space-y-4">
+        {error && <div className="text-red-600 text-sm">{error}</div>}
+        <div>
+          <label className="block text-sm mb-1">Email</label>
+          <input type="email" className="w-full rounded border px-3 py-2" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        </div>
+        <div>
+          <label className="block text-sm mb-1">Password</label>
+          <input type="password" className="w-full rounded border px-3 py-2" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        </div>
+        <button type="submit" disabled={loading} className="btn-primary w-full">{loading ? 'Signing in...' : 'Sign In'}</button>
+      </form>
+      <p className="text-sm text-gray-600 mt-4">No account? <Link to="/register" className="text-brand">Register</Link></p>
+    </div>
+  )
+}
+
