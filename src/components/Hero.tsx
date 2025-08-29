@@ -51,9 +51,10 @@ const Hero = () => {
                 <Button 
                   variant="outline" 
                   size="lg"
-                  className="border-white/30 text-white hover:bg-white/10 w-full sm:w-auto"
+                  className="relative bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 hover:border-white/50 hover:shadow-elegant transition-all duration-300 w-full sm:w-auto overflow-hidden group"
                 >
-                  Learn More
+                  <span className="relative z-10">Learn More</span>
+                  <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                 </Button>
               </Link>
             </div>
